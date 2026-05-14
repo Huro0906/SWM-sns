@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,7 +25,8 @@ import java.util.UUID;
     }
 )
 @EntityListeners(AuditingEntityListener.class)
-@SoftDelete
+@SQLDelete(sql = "UPDATE post_likes SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class PostLike {
 
     @Id
@@ -39,6 +41,9 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @CreatedDate
     @Column(updatable = false)

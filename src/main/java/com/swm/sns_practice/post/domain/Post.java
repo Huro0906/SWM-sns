@@ -8,7 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
@@ -16,7 +17,8 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "posts")
-@SoftDelete
+@SQLDelete(sql = "UPDATE posts SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Post extends BaseTimeEntity {
 
     @Id
